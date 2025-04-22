@@ -15,6 +15,7 @@ questdb = ">=2.0.4,<3.0.0"
 psycopg2-binary = "^2.9.10"
 python-jose = "^3.4.0"
 passlib = "^1.7.4"
+haversine = "^2.9.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
