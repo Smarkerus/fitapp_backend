@@ -1,4 +1,3 @@
-from fitapp_api.gps.models import GPSPoint
 from fitapp_api.gps.db import gps_db
 from asyncpg.exceptions._base import UnknownPostgresError
 
