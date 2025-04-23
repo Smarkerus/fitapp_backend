@@ -1,10 +1,10 @@
-from fitapp_backend.postgres.db import pg_db
-from fitapp_backend.gps.db import gps_db
-from fitapp_backend.gps.models import GPSPoint
+from fitapp_api.postgres.db import pg_db
+from fitapp_api.gps.db import gps_db
+from fitapp_api.gps.models import GPSPoint
 import asyncio
 from sqlmodel import select
-from fitapp_backend.trips.models import TripSummary, Trip
-from fitapp_backend.trips.utils import add_trip_and_trip_summary_to_db
+from fitapp_api.trips.models import TripSummary, Trip
+from fitapp_api.trips.utils import add_trip_and_trip_summary_to_db
 from fastapi import Depends, HTTPException
 
 
