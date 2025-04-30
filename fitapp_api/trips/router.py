@@ -16,8 +16,9 @@ trip_router = APIRouter()
 # Endpointy
 @trip_router.get("/trips_list/")
 async def get_trips_by_user_id(current_user: User = Depends(get_current_user)) -> list[str]:
-    trips_ids = await get_session_ids_by_user_id(current_user.id)
-    return trips_ids
+    trips_ids: list[str] = await get_session_ids_by_user_id(current_user.id)
+    sorted_trips_ids: list[str] = sorted(trips_ids, key=lambda x: int(x.split('_')[0]), reverse=True)
+    return sorted_trips_ids
 
 @trip_router.get("/trips/{session_id}")
 async def get_trip_summary(session_id: str, current_user: User = Depends(get_current_user)) -> TripResponse:
