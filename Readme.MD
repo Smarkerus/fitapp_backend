@@ -1,5 +1,5 @@
 ## Instalacja lokalna i uruchomienie projektu (Python 3 + Poetry)
-1.  Upewnij się, że masz zainstalowanego Pythona 3.9+ oraz `pip`.
+1.  Upewnij się, że masz zainstalowanego Pythona 3.9+ oraz manager pakietów Pythona `pip`.
 2.  Sklonuj repozytorium projektu:
 
     ```bash
