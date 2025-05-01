@@ -2,6 +2,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
+from fitapp_api.trips.enums import TripActivity
 
 class GPSPoint(BaseModel):
     session_id: str
@@ -11,3 +12,4 @@ class GPSPoint(BaseModel):
     longitude: float = Field(ge=-180, le=180)
     acceleration: Optional[float] = 0.0
     last_entry: Optional[bool] = False
+    activity: Optional[TripActivity] = TripActivity.RUNNING

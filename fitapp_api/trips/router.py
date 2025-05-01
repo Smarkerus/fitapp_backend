@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fitapp_api.trips.models import Trip, TripResponse
 from fitapp_api.trips.utils import calculate_trip_metrics
+from fitapp_api.trips.enums import TripActivity
 from fitapp_api.postgres.db import pg_db
 from fitapp_api.gps.db import gps_db
 from fitapp_api.users.router import get_current_user
@@ -19,6 +20,10 @@ async def get_trips_by_user_id(current_user: User = Depends(get_current_user)) -
     trips_ids: list[str] = await get_session_ids_by_user_id(current_user.id)
     sorted_trips_ids: list[str] = sorted(trips_ids, key=lambda x: int(x.split('_')[0]), reverse=True)
     return sorted_trips_ids
+
+@trip_router.get("/activity_types")
+async def get_activity_types(current_user: User = Depends(get_current_user)) -> dict[str, int]:
+    return {activity.name: activity.value for activity in TripActivity}
 
 @trip_router.get("/trips/{session_id}")
 async def get_trip_summary(session_id: str, current_user: User = Depends(get_current_user)) -> TripResponse:
