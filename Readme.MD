@@ -37,7 +37,7 @@
 6.  Lokalne uruchomienie aplikacji możliwe będzie po wykonaniu komendy:
 
     ```bash
-    python -m uvicorn fitapp_backend.main:app --host 0.0.0.0 --port 8000
+    python -m uvicorn fitapp_api.main:app --host 0.0.0.0 --port 8000
     ```
 
 ## Uruchomienie lokalne (Docker Compose)
