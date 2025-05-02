@@ -58,10 +58,10 @@ class UserLogin(BaseModel):
 
 
 class UserDetailsResponse(BaseModel):
-    weight: float
-    height: int
-    age: int
-    gender: Gender
+    weight: Optional[float] = None
+    height: Optional[int] = None
+    age: Optional[int] = None
+    gender: Optional[Gender] = None
 
     class Config:
         from_attributes = True
