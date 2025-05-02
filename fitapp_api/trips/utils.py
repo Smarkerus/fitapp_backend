@@ -1,6 +1,7 @@
 from fitapp_api.gps.models import GPSPoint
 from fitapp_api.postgres.db import pg_db
 from fitapp_api.trips.models import TripSummary, Trip
+from fitapp_api.trips.enums import TripActivity, BurnedCaloriesRatio
 from typing import Tuple
 from haversine import haversine, Unit
 
@@ -37,6 +38,7 @@ async def add_trip_and_trip_summary_to_db(
 def calculate_trip_metrics(trip_id: int, session_id: str, points: list[GPSPoint]) -> Tuple[TripSummary, bool]:
     # TODO: Dodać uzależneinie od masy użytkownika
     """Funkcja do obliczania podsumowania trasy na podstawie punktów GPS."""
+
     if len(points) < 2:
         return TripSummary(
             trip_id=trip_id,
@@ -47,6 +49,8 @@ def calculate_trip_metrics(trip_id: int, session_id: str, points: list[GPSPoint]
             distance=None,
             calories_burned=None
         ), False
+
+    activity: TripActivity = points[0].activity
 
     # Sortowanie punktów GPS według czasu
     sorted_points = sorted(points, key=lambda p: p.timestamp)
@@ -64,7 +68,7 @@ def calculate_trip_metrics(trip_id: int, session_id: str, points: list[GPSPoint]
             unit=Unit.METERS
         )
 
-    calories_burned = distance * 50.0 / 1000.0 if distance > 0 else 0
+    calories_burned = distance * BurnedCaloriesRatio.get_ratio(activity=activity) * 50.0 / 1000.0 if distance > 0 else 0
 
     # Jeżeli trasa nie zakończyła sie, to podsumowanie nie ma pola end_time
     if end_trip:
@@ -79,5 +83,6 @@ def calculate_trip_metrics(trip_id: int, session_id: str, points: list[GPSPoint]
             end_time=final_end_time,
             duration=duration,
             distance=distance,
-            calories_burned=calories_burned
+            calories_burned=calories_burned,
+            activity=activity,
         ), end_trip)

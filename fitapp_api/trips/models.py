@@ -4,6 +4,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from fitapp_api.trips.enums import TripActivity
 
 class TripSummary(SQLModel, table=True):
     trip_id: int = Field(foreign_key="trip.id", primary_key=True)
@@ -13,6 +14,7 @@ class TripSummary(SQLModel, table=True):
     duration: Optional[float] = None
     distance: Optional[float] = None
     calories_burned: Optional[float] = None
+    activity: TripActivity = TripActivity.RUNNING
     trip: "Trip" = Relationship(back_populates="summary")
 
 class Trip(SQLModel, table=True):

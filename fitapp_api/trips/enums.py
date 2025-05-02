@@ -1,13 +1,14 @@
 from enum import Enum
 
 class TripActivity(Enum):
-	RUNNING: 1
-	CYCLING: 2
-	WALKING: 3
-	CLIMBING: 4
-	DIVING: 5
-	SWIMMING: 6
-	OTHER: 7
+	RUNNING = 1
+	CYCLING = 2
+	WALKING = 3
+	CLIMBING = 4
+	DIVING = 5
+	SWIMMING = 6
+	OTHER = 7
+
 
 class BurnedCaloriesRatio(Enum):
     RUNNING = 1.2
@@ -17,3 +18,7 @@ class BurnedCaloriesRatio(Enum):
     DIVING = 0.9
     SWIMMING = 1.1
     OTHER = 1.0 
+
+    @classmethod
+    def get_ratio(cls, activity: TripActivity) -> float:
+        return cls[activity.name].value

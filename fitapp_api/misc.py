@@ -6,6 +6,7 @@ from sqlmodel import select
 from fitapp_api.trips.models import TripSummary, Trip
 from fitapp_api.trips.utils import add_trip_and_trip_summary_to_db
 from fastapi import Depends, HTTPException
+from fitapp_api.trips.enums import TripActivity
 
 
 # Wspólne funkcje pomocnicze - dodane by uniknąć 'circular import'
@@ -21,6 +22,7 @@ async def insert_gps_points_to_db(points: list[GPSPoint]) -> bool:
     if len(unique_user_ids) != 1:
         raise ValueError("Wszystkie punkty GPS muszą mieć tego samego użytkownika.")
     unique_session_ids = set(point.session_id for point in points)
+
     # Dodanie punktów GPS do bazy danych
     try:
         with gps_db.get_new_sender() as sender:
@@ -42,15 +44,17 @@ async def insert_gps_points_to_db(points: list[GPSPoint]) -> bool:
             sender.flush()
     except Exception as e:
         raise RuntimeError(f"Nie udało się dodać do bazy punktów GPS: {str(e)}")
+
     # Sprawdzanie czy wszystkie session_id istnieją w bazie
     tasks = [asyncio.create_task(check_if_trip_exists(session_id)) for session_id in unique_session_ids]
     checked_session_ids = await asyncio.gather(*tasks)
+
     # Dodanie tras i ich podsumowań do bazy jeżeli nie istnieją
-    input_session_ids_tasks = [asyncio.create_task(add_trip_and_trip_summary_to_db(session_id=session_id, user_id=unique_user_ids.pop() )) for session_id, exists in zip(unique_session_ids, checked_session_ids) if not exists]
+    input_session_ids_tasks = [asyncio.create_task(add_trip_and_trip_summary_to_db(session_id=session_id, user_id=unique_user_ids.pop())) for session_id, exists in zip(unique_session_ids, checked_session_ids) if not exists]
     await asyncio.gather(*input_session_ids_tasks)
     return True
 
-async def get_gps_points_by_trip_id(session_id: int) -> list[GPSPoint]:    
+async def get_gps_points_by_trip_id(session_id: str) -> list[GPSPoint]:
     async for session in gps_db.get_connection():
         query = """
                 SELECT timestamp, user_id, session_id, last_entry, latitude, longitude, acceleration
