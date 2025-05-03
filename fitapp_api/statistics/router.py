@@ -22,7 +22,7 @@ def generate_statistics_for_trips(trips: list[Trip]) -> StatisticsResponse:
     total_distance = sum(list(map(lambda trip: trip.summary.distance or 0.0, trips)))
     total_time = sum(list(map(lambda trip: trip.summary.duration or 0.0, trips)))
     total_calories_burned = sum(list(map(lambda trip: trip.summary.calories_burned or 0.0, trips)))
-    average_speed = total_distance / (total_time / 3600) if total_time > 0 else 0.0
+    average_speed = (total_distance / 1000)/ (total_time / 3600) if total_time > 0 else 0.0
 
     trips_by_activity = split_trips_into_activities(trips)
     activities: list[StatisticActivity] = []
