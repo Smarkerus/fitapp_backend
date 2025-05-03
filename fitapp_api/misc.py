@@ -37,6 +37,7 @@ async def insert_gps_points_to_db(points: list[GPSPoint]) -> bool:
                     columns={
                         "latitude": float(point.latitude),
                         "longitude": float(point.longitude),
+                        "activity": point.activity.value,
                         "acceleration": float(point.acceleration) if point.acceleration is not None else 0.0
                     },
                     at=point.timestamp,
@@ -57,7 +58,7 @@ async def insert_gps_points_to_db(points: list[GPSPoint]) -> bool:
 async def get_gps_points_by_trip_id(session_id: str) -> list[GPSPoint]:
     async for session in gps_db.get_connection():
         query = """
-                SELECT timestamp, user_id, session_id, last_entry, latitude, longitude, acceleration
+                SELECT timestamp, user_id, session_id, last_entry, latitude, longitude, activity
                 FROM gps_points
                 WHERE session_id = $1
                 ORDER BY timestamp

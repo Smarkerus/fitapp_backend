@@ -5,6 +5,7 @@ from fitapp_api.gps.router import gps_router
 from fitapp_api.trips.router import trip_router
 from fitapp_api.postgres.db import pg_db
 from fitapp_api.gps.db import gps_db
+from fitapp_api.statistics.router import statistics_router
 
 app = FastAPI()
 
@@ -13,6 +14,7 @@ app.add_event_handler("startup", gps_db.init)
 app.include_router(user_router, prefix="/users", tags=["users"])
 app.include_router(gps_router, prefix="/gps", tags=["gps"])
 app.include_router(trip_router, prefix="/trips", tags=["trips"])
+app.include_router(statistics_router, prefix="/statistics", tags=["statistics"])
 
 app.add_middleware(
     CORSMiddleware,
