@@ -87,12 +87,9 @@ async def get_statistics(request: StatisticsRequest, current_user: User = Depend
                     activities=[],
                     most_liked_activity=None,
                 )
-            else:
-                print(trips[0].summary.activity)
 
         except Exception as e:
             print(f"Błąd podczas pobierania statystyk: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Błąd podczas pobierania statystyk: {str(e)}")
 
-    print(f"Są jakieś tripy: {trips[0]}")
     return generate_statistics_for_trips(trips=trips)

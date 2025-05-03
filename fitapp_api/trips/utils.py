@@ -50,8 +50,6 @@ def calculate_trip_metrics(trip_id: int, session_id: str, points: list[GPSPoint]
             calories_burned=None
         ), False
 
-    print("Punkty GPS: ", points)
-    print("Pierwsza i druga aktywność: ", points[0].activity, points[1].activity)
     activity: TripActivity = points[0].activity
 
     # Sortowanie punktów GPS według czasu
