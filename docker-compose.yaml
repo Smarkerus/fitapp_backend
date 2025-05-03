@@ -20,7 +20,6 @@ services:
       - QDB_PG_PORT=${QDB_PG_PORT}
       - QDB_PG_USER=${QDB_PG_USER}
       - QDB_PG_PASSWORD=${QDB_PG_PASSWORD}
-      - TZ=Europe/Warsaw
     restart: always
     networks:
       - fitapp-network
@@ -33,7 +32,6 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-      - TZ=Europe/Warsaw
     ports:
       - "5432:5432"
     volumes:
@@ -49,7 +47,6 @@ services:
     environment:
       - QDB_HTTP_USER=${QDB_HTTP_USER}
       - QDB_HTTP_PASSWORD=${QDB_HTTP_PASSWORD}
-      - TZ=Europe/Warsaw
     ports:
       - "8812:8812"
       - "9000:9000"

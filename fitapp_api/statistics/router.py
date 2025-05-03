@@ -4,7 +4,7 @@ from fitapp_api.users.router import get_current_user
 from fitapp_api.users.models import User
 from fitapp_api.statistics.models import StatisticsRequest, StatisticsResponse, StatisticActivity
 from sqlalchemy.orm import selectinload
-from fitapp_api.trips.models import Trip, TripResponse, TripSummary
+from fitapp_api.trips.models import Trip, TripSummary
 from sqlmodel import select
 from fitapp_api.trips.enums import TripActivity
 

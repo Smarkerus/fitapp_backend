@@ -7,6 +7,7 @@ from fitapp_api.trips.models import TripSummary, Trip
 from fitapp_api.trips.utils import add_trip_and_trip_summary_to_db
 from fastapi import Depends, HTTPException
 from fitapp_api.trips.enums import TripActivity
+from datetime import timezone
 
 
 # Wspólne funkcje pomocnicze - dodane by uniknąć 'circular import'
@@ -27,6 +28,7 @@ async def insert_gps_points_to_db(points: list[GPSPoint]) -> bool:
     try:
         with gps_db.get_new_sender() as sender:
             for point in points:
+                utc_timestamp = point.timestamp.replace(tzinfo=None)
                 sender.row(
                     table_name="gps_points",
                     symbols={
@@ -40,7 +42,7 @@ async def insert_gps_points_to_db(points: list[GPSPoint]) -> bool:
                         "activity": point.activity.value,
                         "acceleration": float(point.acceleration) if point.acceleration is not None else 0.0
                     },
-                    at=point.timestamp,
+                    at=utc_timestamp,
                 )
             sender.flush()
     except Exception as e:
