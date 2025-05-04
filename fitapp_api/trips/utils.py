@@ -35,8 +35,7 @@ async def add_trip_and_trip_summary_to_db(
 
         return trip
 
-def calculate_trip_metrics(trip_id: int, session_id: str, points: list[GPSPoint]) -> Tuple[TripSummary, bool]:
-    # TODO: Dodać uzależneinie od masy użytkownika
+def calculate_trip_metrics(trip_id: int, session_id: str, points: list[GPSPoint], weight: float = 50.0) -> Tuple[TripSummary, bool]:
     """Funkcja do obliczania podsumowania trasy na podstawie punktów GPS."""
 
     if len(points) < 2:
@@ -68,7 +67,8 @@ def calculate_trip_metrics(trip_id: int, session_id: str, points: list[GPSPoint]
             unit=Unit.METERS
         )
 
-    calories_burned = distance * BurnedCaloriesRatio.get_ratio(activity=activity) * 50.0 / 1000.0 if distance > 0 else 0
+    user_weight: float = weight if weight else 50.0
+    calories_burned = distance * BurnedCaloriesRatio.get_ratio(activity=activity) * user_weight / 1000.0 if distance > 0 else 0
 
     # Jeżeli trasa nie zakończyła sie, to podsumowanie nie ma pola end_time
     if end_trip:

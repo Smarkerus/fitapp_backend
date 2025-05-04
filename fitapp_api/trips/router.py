@@ -45,7 +45,7 @@ async def get_trip_summary(session_id: str, current_user: User = Depends(get_cur
 
         # Sprawdzanie czy istnieje podsumowanie
         if not trip.summary:
-            trip_summary, add_to_db = calculate_trip_metrics(trip_id=trip.id, session_id=session_id, points=points)
+            trip_summary, add_to_db = calculate_trip_metrics(trip_id=trip.id, session_id=session_id, points=points, weight=current_user.details.weight)
 
             trip.summary = trip_summary
 

@@ -33,9 +33,9 @@ class User(SQLModel, table=True):
 class UserDetails(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id", unique=True)
-    weight: Optional[float] = Field(default=None)
-    height: Optional[int] = Field(default=None)
-    age: Optional[int] = Field(default=None)
+    weight: Optional[float] = Field(ge=0, default=None)
+    height: Optional[int] = Field(ge=0, default=None)
+    age: Optional[int] = Field(ge=0, default=None)
     gender: Optional[Gender] = Field(default=None)
     user: Optional["User"] = Relationship(back_populates="details")
 
