@@ -74,3 +74,23 @@ async def update_reminder(reminder: Reminder, current_user: User = Depends(get_c
         except Exception as e:
             print(f"Błąd podczas aktualizacji przypominajki: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Błąd podczas aktualizacji przypominajki: {str(e)}")
+
+@reminders_router.delete("/reminders")
+async def delete_reminder(current_user: User = Depends(get_current_user)) -> None:
+    """Usuń przypominajkę użytkownika."""
+    existing_reminder_response = await get_reminder_by_user_id(user_id=current_user.id)
+    if not existing_reminder_response:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Przypominajka nie istnieje.")
+
+    async for session in pg_db.get_session():
+        try:
+            statement = select(Reminder).where(Reminder.user_id == current_user.id)
+            results = await session.execute(statement=statement)
+            existing_reminder = results.scalars().first()
+
+            await session.delete(existing_reminder)
+            await session.commit()
+
+        except Exception as e:
+            print(f"Błąd podczas usuwania przypominajki: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Błąd podczas usuwania przypominajki: {str(e)}")
