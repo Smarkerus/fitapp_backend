@@ -40,6 +40,11 @@ class UserDetails(SQLModel, table=True):
     user: Optional["User"] = Relationship(back_populates="details")
 
 
+class UserFcmID(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int
+    fcm_push_token: Optional[str] = Field(default=None)
+
 class UserCreate(BaseModel):
     name: str
     last_name: str

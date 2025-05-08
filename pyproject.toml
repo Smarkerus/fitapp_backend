@@ -18,6 +18,7 @@ passlib = "^1.7.4"
 haversine = "^2.9.0"
 pydantic = {extras = ["email"], version = "^2.11.3"}
 python-multipart = "^0.0.20"
+exponent-server-sdk = "^2.1.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

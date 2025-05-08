@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-from fitapp_api.users.models import User, UserDetails, UserCreate, UserResponse, Gender
+from fitapp_api.users.models import User, UserDetails, UserCreate, UserResponse, Gender, UserFcmID
 from fitapp_api.postgres.db import PostgresDB
 import os
 from dotenv import load_dotenv
@@ -149,6 +149,7 @@ async def logout():
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
 
+
 @user_router.get("/users/{user_id}", response_model=UserResponse)
 async def read_user(user_id: int, current_user: User = Depends(get_current_admin_user), db: AsyncSession = Depends(PostgresDB().get_session)):
     statement = select(User).where(User.id == user_id)
@@ -157,6 +158,30 @@ async def read_user(user_id: int, current_user: User = Depends(get_current_admin
     if user is None:
         raise HTTPException(status_code=404, detail="Podany użytkownik nie istnieje!")
     return user
+
+@user_router.post("/fcm-push-token")
+async def register_fcm_push_token(fcm_push_token: str, current_user: User = Depends(get_current_user), db: AsyncSession = Depends(PostgresDB().get_session)) -> dict[str, str]:
+    if not fcm_push_token:
+        raise HTTPException(status_code=400, detail="Nieprawidłowy token!")
+    
+    user_fcm_id = await db.get(UserFcmID, current_user.id)
+    if user_fcm_id is None:
+        user_fcm_id = UserFcmID(user_id=current_user.id, fcm_push_token=fcm_push_token)
+        db.add(user_fcm_id)
+    else:
+        user_fcm_id.fcm_push_token = fcm_push_token
+
+    await db.commit()
+    print(f"Token FCM Push zarejestrowany dla użytkownika {current_user.id}: {fcm_push_token}")
+    return {"message": "Token FCM Push zarejestrowany pomyślnie!"}
+
+@user_router.get("/fcm-push-token")
+async def get_fcm_push_token(current_user: User = Depends(get_current_user), db: AsyncSession = Depends(PostgresDB().get_session)) -> dict[str, str]:
+    user_fcm_id = await db.get(UserFcmID, current_user.id)
+    if user_fcm_id is None:
+        raise HTTPException(status_code=404, detail="Nie znaleziono tokenu FCM Push dla tego użytkownika!")
+
+    return {"fcm_push_token": user_fcm_id.fcm_push_token}
 
 @user_router.delete("/users/{user_id}")
 async def delete_user(user_id: int, current_user: User = Depends(get_current_admin_user), db: AsyncSession = Depends(PostgresDB().get_session)):
