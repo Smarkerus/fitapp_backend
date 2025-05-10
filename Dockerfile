@@ -21,6 +21,7 @@ RUN pip install --no-cache-dir poetry==1.8.3 && \
     rm -rf /root/.cache/pypoetry
 
 COPY fitapp_api/ /app/fitapp_api/
+COPY serviceAccountKey.json /app/serviceAccountKey.json
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \

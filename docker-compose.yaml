@@ -20,6 +20,8 @@ services:
       - QDB_PG_PORT=${QDB_PG_PORT}
       - QDB_PG_USER=${QDB_PG_USER}
       - QDB_PG_PASSWORD=${QDB_PG_PASSWORD}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_API_KEY_FILENAME=${FIREBASE_API_KEY_FILENAME}
     restart: always
     networks:
       - fitapp-network

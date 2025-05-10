@@ -80,3 +80,6 @@ config_local.py
 *.swp
 .DS_Store
 Thumbs.db
+
+# Firebase
+serviceAccountKey.json

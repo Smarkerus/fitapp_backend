@@ -43,41 +43,46 @@
 ## Uruchomienie lokalne (Docker Compose)
 
 1.  Upewnij się, że masz zainstalowanego Dockera.
-2.  Stwórz plik `.env` i wstaw do niego zawartość pliku `.env.example`, dostosuj zmienne środowiskowe:
+2.  Upewnij się, że masz stworzoną aplikację typu Cloud Messaging na platformie Firebase (posiadasz klucz uprawnień jak i nazwę projektu).
+3.  Stwórz plik `.env` i wstaw do niego zawartość pliku `.env.example`, dostosuj zmienne środowiskowe:
 
-    Konfiguracja zmiennych środowiskowych w pliku `.env`:
+     Konfiguracja zmiennych środowiskowych w pliku `.env`:
 
-    ```
-    PYTHONDONTWRITEBYTECODE=1
-    POSTGRES_HOST=localhost
-    POSTGRES_PORT=5432
-    POSTGRES_USER=postgres
-    POSTGRES_PASSWORD=postgres
-    POSTGRES_DB=fitapp_db
-    QDB_HTTP_HOST=localhost
-    QDB_HTTP_PORT=9000
-    QDB_HTTP_USER=questdb
-    QDB_HTTP_PASSWORD=questdb
-    QDB_PG_HOST=localhost
-    QDB_PG_PORT=8812
-    QDB_PG_USER=admin
-    QDB_PG_PASSWORD=quest
-    ```
+        ```
+        PYTHONDONTWRITEBYTECODE=1
+        POSTGRES_HOST=localhost
+        POSTGRES_PORT=5432
+        POSTGRES_USER=postgres
+        POSTGRES_PASSWORD=postgres
+        POSTGRES_DB=fitapp_db
+        QDB_HTTP_HOST=localhost
+        QDB_HTTP_PORT=9000
+        QDB_HTTP_USER=questdb
+        QDB_HTTP_PASSWORD=questdb
+        QDB_PG_HOST=localhost
+        QDB_PG_PORT=8812
+        QDB_PG_USER=admin
+        QDB_PG_PASSWORD=quest
+        FIREBASE_PROJECT_ID=projekt_id_firebase
+        FIREBASE_API_KEY_FILENAME=serviceAccountKey.json
+        ```
 
-    *   `PYTHONDONTWRITEBYTECODE`: Wyłącza tworzenie plików `.pyc` (bytecode) przez Pythona.
-    *   `POSTGRES_HOST`: Adres hosta serwera PostgreSQL.
-    *   `POSTGRES_PORT`: Port serwera PostgreSQL.
-    *   `POSTGRES_USER`: Nazwa użytkownika PostgreSQL.
-    *   `POSTGRES_PASSWORD`: Hasło użytkownika PostgreSQL.
-    *   `POSTGRES_DB`: Nazwa bazy danych PostgreSQL.
-    *   `QDB_HTTP_HOST`: Adres hosta QuestDB (interfejs HTTP).
-    *   `QDB_HTTP_PORT`: Port interfejsu HTTP QuestDB.
-    *   `QDB_HTTP_USER`: Nazwa użytkownika QuestDB (interfejs HTTP).
-    *   `QDB_HTTP_PASSWORD`: Hasło użytkownika QuestDB (interfejs HTTP).
-    *   `QDB_PG_HOST`: Adres hosta QuestDB (interfejs PostgreSQL).
-    *   `QDB_PG_PORT`: Port interfejsu PostgreSQL QuestDB.
-    *   `QDB_PG_USER`: Nazwa użytkownika QuestDB (interfejs PostgreSQL).
-    *   `QDB_PG_PASSWORD`: Hasło użytkownika QuestDB (interfejs PostgreSQL).
+        *   `PYTHONDONTWRITEBYTECODE`: Wyłącza tworzenie plików `.pyc` (bytecode) przez Pythona.
+        *   `POSTGRES_HOST`: Adres hosta serwera PostgreSQL.
+        *   `POSTGRES_PORT`: Port serwera PostgreSQL.
+        *   `POSTGRES_USER`: Nazwa użytkownika PostgreSQL.
+        *   `POSTGRES_PASSWORD`: Hasło użytkownika PostgreSQL.
+        *   `POSTGRES_DB`: Nazwa bazy danych PostgreSQL.
+        *   `QDB_HTTP_HOST`: Adres hosta QuestDB (interfejs HTTP).
+        *   `QDB_HTTP_PORT`: Port interfejsu HTTP QuestDB.
+        *   `QDB_HTTP_USER`: Nazwa użytkownika QuestDB (interfejs HTTP).
+        *   `QDB_HTTP_PASSWORD`: Hasło użytkownika QuestDB (interfejs HTTP).
+        *   `QDB_PG_HOST`: Adres hosta QuestDB (interfejs PostgreSQL).
+        *   `QDB_PG_PORT`: Port interfejsu PostgreSQL QuestDB.
+        *   `QDB_PG_USER`: Nazwa użytkownika QuestDB (interfejs PostgreSQL).
+        *   `QDB_PG_PASSWORD`: Hasło użytkownika QuestDB (interfejs PostgreSQL).
+        *   `FIREBASE_PROJECT_ID`: Identyfikator projektu Firebase.
+        *   `FIREBASE_API_KEY_FILENAME`: Nazwa pliku zawierającego klucz API Firebase.
 
 3.  Uruchom kontenery Dockera:
 

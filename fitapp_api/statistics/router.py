@@ -7,7 +7,7 @@ from sqlalchemy.orm import selectinload
 from fitapp_api.trips.models import Trip, TripSummary
 from sqlmodel import select
 from fitapp_api.trips.enums import TripActivity
-
+from datetime import datetime
 
 statistics_router = APIRouter()
 
@@ -52,14 +52,13 @@ def generate_statistics_for_trips(trips: list[Trip]) -> StatisticsResponse:
         most_liked_activity=most_liked_activity.activity if most_liked_activity else None
     )
 
-# Endpointy
-@statistics_router.post("/statistics")
-async def get_statistics(request: StatisticsRequest, current_user: User = Depends(get_current_user)) -> StatisticsResponse | None:
-    if request.user_id != current_user.id and not current_user.is_admin:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Brak uprawnień do przeglądania statystyk tego użytkownika.")
-
-    start_time_naive = request.start_time.replace(tzinfo=None)
-    end_time_naive = request.end_time.replace(tzinfo=None)
+async def get_statistics_for_user_in_time_range(
+    user_id: int,
+    start_time: datetime,
+    end_time: datetime
+) -> StatisticsResponse:
+    start_time_naive = start_time.replace(tzinfo=None)
+    end_time_naive = end_time.replace(tzinfo=None)
 
     async for session in pg_db.get_session():
         try:
@@ -67,19 +66,19 @@ async def get_statistics(request: StatisticsRequest, current_user: User = Depend
                 select(Trip)
                 .join(TripSummary, Trip.id == TripSummary.trip_id)
                 .where(
-                    Trip.user_id == request.user_id,
+                    Trip.user_id == user_id,
                     TripSummary.start_time >= start_time_naive,
                     TripSummary.end_time <= end_time_naive
                 )
                 .options(selectinload(Trip.summary))
             )
-            
+
             results = await session.execute(statement)
             trips = results.scalars().all()
-            
+
             if not trips:
                 return StatisticsResponse(
-                    user_id=request.user_id,
+                    user_id=user_id,
                     average_speed=0.0,
                     total_distance=0.0,
                     total_time=0,
@@ -88,8 +87,19 @@ async def get_statistics(request: StatisticsRequest, current_user: User = Depend
                     most_liked_activity=None,
                 )
 
-        except Exception as e:
-            print(f"Błąd podczas pobierania statystyk: {str(e)}")
-            raise HTTPException(status_code=500, detail=f"Błąd podczas pobierania statystyk: {str(e)}")
+            return generate_statistics_for_trips(trips=trips)
 
-    return generate_statistics_for_trips(trips=trips)
+        except Exception as e:
+             raise HTTPException(status_code=500, detail=f"Błąd podczas pobierania statystyk: {str(e)} dla użytkownika {user_id}")
+
+# Endpointy
+@statistics_router.post("/statistics")
+async def get_statistics(request: StatisticsRequest, current_user: User = Depends(get_current_user)) -> StatisticsResponse | None:
+    if request.user_id != current_user.id and not current_user.is_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Brak uprawnień do przeglądania statystyk tego użytkownika.")
+
+    return await get_statistics_for_user_in_time_range(
+        user_id=request.user_id,
+        start_time=request.start_time,
+        end_time=request.end_time
+    )
